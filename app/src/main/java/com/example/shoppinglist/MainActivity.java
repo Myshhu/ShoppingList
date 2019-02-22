@@ -4,9 +4,11 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -26,35 +28,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = findViewById(R.id.listView);
-
-        /*listAdapter = new ArrayAdapter<>(this,
-                getResources()., listMessages);*/
-
         listAdapter = new ListAdapter(this, listMessages, listIsSelected);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                System.out.println("Getting position: " + position + " listview items: " + listView.getChildCount());
-
-                /*ColorDrawable colorDrawable = (ColorDrawable) parent.getChildAt(position).getBackground();
-                if(colorDrawable == null) {
-                    System.out.println("Color drawable null");
-                    listView.getChildAt(position).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                } else {
-                    if (colorDrawable.getColor() == ContextCompat.getColor(getApplicationContext(), R.color.darkGreen)) {
-                        listView.getChildAt(position).setBackgroundColor(Color.RED);
-                    } else {
-                        listView.getChildAt(position).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                    }
-                }*/
-            }
-        });
-
         listView.setAdapter(listAdapter);
 
         initList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     private void initList() {
@@ -93,6 +77,13 @@ public class MainActivity extends AppCompatActivity {
                 listMessages.add(item);
                 listIsSelected.add(0);
                 listAdapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNeutralButton("Add test items", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                initList();
             }
         });
 
