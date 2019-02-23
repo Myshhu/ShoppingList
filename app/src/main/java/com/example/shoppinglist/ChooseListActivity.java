@@ -42,6 +42,7 @@ public class ChooseListActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("filenameToLoad", files.get(position));
                 startActivity(intent);
+                finish();
             }
         });
     }

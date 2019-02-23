@@ -60,12 +60,33 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(listAdapter);
 
         Bundle extras = getIntent().getExtras();
+        //Extras not null at first launch
         if(extras != null) {
             String filenameToLoad = extras.getString("filenameToLoad");
-            loadFromFile(filenameToLoad);
-            listAdapter.notifyDataSetChanged();
-            currentListName = filenameToLoad;
-            setTitle(currentListName);
+            if(filenameToLoad != null) {
+                loadFromFile(filenameToLoad);
+                listAdapter.notifyDataSetChanged();
+                currentListName = filenameToLoad;
+                setTitle(currentListName);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentListName.equals("") && listMessages.size() != 0 && listMessages.size() != 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("List not saved");
+            builder.setMessage("Do you want to save your new list?");
+            builder.setPositiveButton("Yes", (dialog, which) -> createSaveDialog(false));
+            builder.setNeutralButton("No", (dialog, which) -> {
+                dialog.dismiss();
+                super.onBackPressed();
+            });
+            builder.show();
+        } else {
+            saveToFile(currentListName);
+            super.onBackPressed();
         }
     }
 
@@ -175,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void itemChangeListDialog() {
-        if (currentListName.equals("")) {
+        if (currentListName.equals("") && listMessages.size() != 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("List not saved");
             builder.setMessage("Do you want to save your new list?");
@@ -192,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void itemMakeNewListDialog() {
-        if (currentListName.equals("")) {
+        if (currentListName.equals("") && listMessages.size() != 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("List not saved");
             builder.setMessage("Do you want to save your new list?");
@@ -207,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
             clearList();
         }
     }
+
     private void loadFromFile(String filename) {
         try {
             //Read from external storage
