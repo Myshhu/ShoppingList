@@ -2,15 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/first"
+    <!--item
+        android:id="@+id/itemRemoveAllItems"
         android:title="Remove all items"
+        app:showAsAction="never">
+    </item-->
+
+    <item
+        android:id="@+id/itemChangeList"
+        android:title="Load list"
         app:showAsAction="never">
     </item>
 
     <item
-        android:id="@+id/second"
-        android:title="Change list"
+        android:id="@+id/itemMakeNewList"
+        android:title="Add new list"
         app:showAsAction="never">
     </item>
+
+    <item
+        android:id="@+id/itemChangeListName"
+        android:title="Change list name (Save as)"
+        app:showAsAction="never">
+    </item>
+
+    <!--item
+        android:id="@+id/itemLoadFromFile"
+        android:title="Load from file"
+        app:showAsAction="never">
+    </item-->
 </menu>
