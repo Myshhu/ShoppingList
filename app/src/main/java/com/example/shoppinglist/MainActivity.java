@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private String directoryPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "ShoppingList_lists" + File.separator;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (currentListName.equals("") && listMessages.size() != 0 && listMessages.size() != 0) {
+        if (currentListName.equals("") && listMessages.size() != 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("List not saved");
             builder.setMessage("Do you want to save your new list?");
@@ -195,41 +194,7 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void itemChangeListDialog() {
-        if (currentListName.equals("") && listMessages.size() != 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("List not saved");
-            builder.setMessage("Do you want to save your new list?");
-            builder.setPositiveButton("Yes", (dialog, which) -> createSaveDialog(true));
-            builder.setNeutralButton("No", (dialog, which) -> {
-                dialog.dismiss();
-                startChangeListActivity();
-            });
-            builder.show();
-        } else {
-            saveToFile(currentListName);
-            startChangeListActivity();
-        }
-    }
-
-    private void itemMakeNewListDialog() {
-        if (currentListName.equals("") && listMessages.size() != 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("List not saved");
-            builder.setMessage("Do you want to save your new list?");
-            builder.setPositiveButton("Yes", (dialog, which) -> createSaveDialog(false));
-            builder.setNeutralButton("No", (dialog, which) -> {
-                dialog.dismiss();
-                clearList();
-            });
-            builder.show();
-        } else {
-            saveToFile(currentListName);
-            clearList();
-        }
-    }
-
-    private void loadFromFile(String filename) {
+    private boolean loadFromFile(String filename) {
         try {
             //Read from external storage
             File f = new File(directoryPath + filename);
@@ -258,10 +223,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to load data from file " + filename, Toast.LENGTH_LONG).show();
+            return false;
         }
+
+        return true;
     }
 
-    private void saveToFile(String filename) {
+    private boolean saveToFile(String filename) {
         try {
             //Write to external storage
             File f = new File(directoryPath + filename);
@@ -283,7 +251,23 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
+    }
+
+    private String findFreeFilename() {
+        int i = 1;
+        boolean loop = true;
+        while (loop) {
+            File file = new File(directoryPath + "New list" + i + ".txt");
+            if (file.exists()) {
+                i++;
+            } else {
+                loop = false;
+            }
+        }
+        return "New list" + i + ".txt";
     }
 
     private void createSaveDialog(boolean gotoListChange) {
@@ -329,18 +313,38 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private String findFreeFilename() {
-        int i = 1;
-        boolean loop = true;
-        while (loop) {
-            File file = new File(directoryPath + "New list" + i + ".txt");
-            if (file.exists()) {
-                i++;
-            } else {
-                loop = false;
-            }
+    private void itemChangeListDialog() {
+        if (currentListName.equals("") && listMessages.size() != 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("List not saved");
+            builder.setMessage("Do you want to save your new list?");
+            builder.setPositiveButton("Yes", (dialog, which) -> createSaveDialog(true));
+            builder.setNeutralButton("No", (dialog, which) -> {
+                dialog.dismiss();
+                startChangeListActivity();
+            });
+            builder.show();
+        } else {
+            saveToFile(currentListName);
+            startChangeListActivity();
         }
-        return "New list" + i + ".txt";
+    }
+
+    private void itemMakeNewListDialog() {
+        if (currentListName.equals("") && listMessages.size() != 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("List not saved");
+            builder.setMessage("Do you want to save your new list?");
+            builder.setPositiveButton("Yes", (dialog, which) -> createSaveDialog(false));
+            builder.setNeutralButton("No", (dialog, which) -> {
+                dialog.dismiss();
+                clearList();
+            });
+            builder.show();
+        } else {
+            saveToFile(currentListName);
+            clearList();
+        }
     }
 
     private void createOverwriteDialog(String filename, boolean gotoListChange) {
