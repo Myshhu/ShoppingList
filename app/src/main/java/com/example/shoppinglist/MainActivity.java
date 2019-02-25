@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -213,8 +214,17 @@ public class MainActivity extends AppCompatActivity {
             listIsSelected.clear();
 
             while ((line = reader.readLine()) != null) {
-                listMessages.add(line.split(" ")[0]);
-                listIsSelected.add(Integer.parseInt(line.split(" ")[1]));
+                String[] stringArray = Arrays.copyOf(line.split(" "), line.split(" ").length - 1);
+                StringBuilder arrayResult = new StringBuilder();
+                for(int i = 0; i < stringArray.length; i++) {
+                    if(i != stringArray.length - 1) {
+                        arrayResult.append(stringArray[i]).append(" ");
+                    } else {
+                        arrayResult.append(stringArray[i]);
+                    }
+                }
+                listMessages.add(arrayResult.toString());
+                listIsSelected.add(Integer.parseInt(line.split(" ")[line.split(" ").length - 1]));
                 sb.append(line).append("\n");
             }
             reader.close();
