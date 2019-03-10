@@ -3,6 +3,7 @@ package com.example.shoppinglist;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -68,8 +69,28 @@ public class MainActivity extends AppCompatActivity {
                 listAdapter.notifyDataSetChanged();
                 currentListName = filenameToLoad;
                 setTitle(currentListName);
+            } else {
+                //First launch, check list turned on before last exit
+                if(!readLastReadList().equals("")) {
+                    loadFromFile(readLastReadList());
+                    listAdapter.notifyDataSetChanged();
+                    currentListName = readLastReadList();
+                    setTitle(readLastReadList());
+                }
             }
         }
+    }
+
+    private String readLastReadList() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        return sharedPreferences.getString("listOpenedOnExit", "");
+    }
+
+    private void saveCurrentListNumber() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        prefsEditor.putString("listOpenedOnExit", currentListName);
+        prefsEditor.apply();
     }
 
     @Override
@@ -86,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             builder.show();
         } else {
             saveToFile(currentListName);
+            saveCurrentListNumber();
             super.onBackPressed();
         }
     }
