@@ -162,19 +162,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initList() {
-        listMessages.add("Mleko");
+        listMessages.add("Buy Milk");
         listIsSelected.add(0);
-        listMessages.add("Masło");
+        listMessages.add("Butter");
         listIsSelected.add(0);
-        listMessages.add("Bułki");
+        listMessages.add("Bread");
         listIsSelected.add(0);
-        listMessages.add("Ser");
+        listMessages.add("Cheese");
         listIsSelected.add(0);
-        listMessages.add("Jabłka");
+        listMessages.add("Wash car");
         listIsSelected.add(0);
-        listMessages.add("Cytryny");
+        listMessages.add("Clean room");
         listIsSelected.add(0);
-        listMessages.add("Woda");
+        listMessages.add("Do math");
         listIsSelected.add(0);
 
         listAdapter.notifyDataSetChanged();
@@ -190,29 +190,16 @@ public class MainActivity extends AppCompatActivity {
         etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(etInput);
 
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String item = etInput.getText().toString();
-                listMessages.add(item);
-                listIsSelected.add(0);
-                listAdapter.notifyDataSetChanged();
-            }
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String item = etInput.getText().toString();
+            listMessages.add(item);
+            listIsSelected.add(0);
+            listAdapter.notifyDataSetChanged();
         });
 
-        builder.setNeutralButton("Add test items", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                initList();
-            }
-        });
+        builder.setNeutralButton("Add test items", (dialog, which) -> initList());
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
@@ -310,37 +297,29 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Save list");
         builder.setView(etInput);
 
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String filenameWithTxt;
-                if (etInput.getText().toString().equals("")) {
-                    filenameWithTxt = findFreeFilename();
-                } else {
-                    filenameWithTxt = etInput.getText().toString() + ".txt";
-                }
-                File file = new File(directoryPath + filenameWithTxt);
-                if (file.exists()) {
-                    //Make choice
-                    createOverwriteDialog(filenameWithTxt, gotoListChange);
-                } else {
-                    //Just save
-                    saveToFile(filenameWithTxt);
-                    currentListName = filenameWithTxt;
-                    setTitle(currentListName);
-                    if(gotoListChange){
-                        startChangeListActivity();
-                    }
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String filenameWithTxt;
+            if (etInput.getText().toString().equals("")) {
+                filenameWithTxt = findFreeFilename();
+            } else {
+                filenameWithTxt = etInput.getText().toString() + ".txt";
+            }
+            File file = new File(directoryPath + filenameWithTxt);
+            if (file.exists()) {
+                //Make choice
+                createOverwriteDialog(filenameWithTxt, gotoListChange);
+            } else {
+                //Just save
+                saveToFile(filenameWithTxt);
+                currentListName = filenameWithTxt;
+                setTitle(currentListName);
+                if(gotoListChange){
+                    startChangeListActivity();
                 }
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
@@ -407,23 +386,15 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Load list");
         builder.setView(etInput);
 
-        builder.setPositiveButton("Load", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(!etInput.getText().toString().equals("")){
-                    String filenameWithTxt = etInput.getText().toString() + ".txt";
-                    loadFromFile(filenameWithTxt);
-                    listAdapter.notifyDataSetChanged();
-                }
+        builder.setPositiveButton("Load", (dialog, which) -> {
+            if(!etInput.getText().toString().equals("")){
+                String filenameWithTxt = etInput.getText().toString() + ".txt";
+                loadFromFile(filenameWithTxt);
+                listAdapter.notifyDataSetChanged();
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
